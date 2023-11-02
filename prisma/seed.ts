@@ -8,7 +8,7 @@ async function run() {
 
   const promises = [];
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 500; i++) {
     promises.push(
       prisma.user.create({
         data: {
