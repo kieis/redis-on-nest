@@ -1,8 +1,10 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '@prisma/client';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
-@Controller('user')
+@UseInterceptors(CacheInterceptor)
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -16,6 +18,14 @@ export class UserController {
 
   @Get('all')
   async getAllUsers(): Promise<User[]> {
+    const users = await this.userService.users({});
+    return users;
+  }
+
+  @Get('auto-caching')
+  @CacheKey('auto-caching-user')
+  @CacheTTL(10)
+  async getAutoCaching() {
     const users = await this.userService.users({});
     return users;
   }

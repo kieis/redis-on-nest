@@ -3,9 +3,14 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { CacheModule, CacheStore } from '@nestjs/cache-manager';
+import {
+  CacheInterceptor,
+  CacheModule,
+  CacheStore,
+} from '@nestjs/cache-manager';
 
 import * as redisStore from 'cache-manager-redis-store';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -20,6 +25,12 @@ import * as redisStore from 'cache-manager-redis-store';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}
