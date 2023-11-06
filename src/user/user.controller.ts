@@ -19,7 +19,7 @@ import { Cache } from 'cache-manager';
 @Controller('users')
 export class UserController {
   constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
     private readonly userService: UserService,
   ) {}
 
@@ -38,9 +38,14 @@ export class UserController {
   }
 
   @Get('test')
-  async getTest(): Promise<string> {
-    const cached = await this.cacheManager.get<string>('auto-caching-user');
-    return JSON.stringify(cached);
+  async getTest(): Promise<any> {
+    await this.cacheService.set('test2', JSON.stringify({
+      name: 'test',
+      age: 18
+    }), { ttl: 10000 });
+    const cached = await this.cacheService.get<string>('test');
+    console.log(cached, "cached");
+    return JSON.parse(cached);
   }
 
   @Get('auto-caching')
