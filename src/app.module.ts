@@ -7,6 +7,7 @@ import {
   CacheInterceptor,
   CacheModule,
   CacheStore,
+  CacheStoreFactory,
 } from '@nestjs/cache-manager';
 
 import * as redisStore from 'cache-manager-redis-store';
@@ -17,14 +18,17 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
-      isGlobal: true
+      isGlobal: true,
     }),
     //CacheModule.register<RedisClientOptions>({ ~~ can't use type while lib isn't updated
     //https://github.com/dabroek/node-cache-manager-redis-store/issues/53
     CacheModule.register({
-      store: redisStore as unknown as CacheStore,
+      store: redisStore,
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
+      username: process.env.REDIS_USER || undefined,
+      password: process.env.REDIS_PASSWORD || undefined,
+      database: 0,
       isGlobal: true,
     }),
     UserModule,
