@@ -42,7 +42,7 @@ export class UserController {
     await this.cacheService.set('test2', JSON.stringify({
       name: 'test',
       age: 18
-    }), { ttl: 10000 });
+    }), 10000);
     const cached = await this.cacheService.get<string>('test');
     console.log(cached, "cached");
     return JSON.parse(cached);

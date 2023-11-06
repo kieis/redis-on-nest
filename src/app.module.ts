@@ -23,12 +23,15 @@ import { ConfigModule } from '@nestjs/config';
     //CacheModule.register<RedisClientOptions>({ ~~ can't use type while lib isn't updated
     //https://github.com/dabroek/node-cache-manager-redis-store/issues/53
     CacheModule.register({
-      store: redisStore,
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-      username: process.env.REDIS_USER || undefined,
-      password: process.env.REDIS_PASSWORD || undefined,
-      database: 0,
+      useFactory: async () => ({
+        store: redisStore,
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+        username: process.env.REDIS_USER || undefined,
+        password: process.env.REDIS_PASSWORD || undefined,
+        database: 0,
+        // ttl: 1000,
+    }),
       isGlobal: true,
     }),
     UserModule,
